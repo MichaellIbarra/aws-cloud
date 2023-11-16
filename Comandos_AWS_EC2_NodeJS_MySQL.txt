@@ -1,0 +1,34 @@
+poner ubuntu: ssh ubuntu@ip -i tuclaeprivada
+
+1- sudo apt update && sudo apt upgrade -y
+2-
+sudo apt install mysql-server -y
+3-
+sudo mysql
+4-
+SELECT user,authentication_string,plugin,host FROM mysql.user;
+5-
+ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'admin';
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'admin';
+6-
+mysql -u root -p
+7-
+CREATE USER 'michaell'@'localhost' IDENTIFIED WITH mysql_native_password BY 'admin';
+8-  
+GRANT ALL PRIVILEGES ON *.* TO 'michaell'@'localhost' WITH GRANT OPTION;
+9-		
+FLUSH PRIVILEGES;
+10-
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+11-
+
+source ~/.nvm/nvm.sh
+12-
+Instalar la última versión de Node.js con LTS:
+nvm install --lts
+13-
+git clone
+guarda tu toke : 
+git branch
+git switch
+

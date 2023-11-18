@@ -1,0 +1,102 @@
+index.js-------------------------------------
+app.use(express.static('src/js'))
+
+app.get('/calendario.html', (req, res) =>{
+    res.sendFile(path.join(__dirname, 'src/html/calendario.html'));
+})
+
+
+app.get('/api/dates/:fechaactual', (req, res) =>{
+    conex.query(
+        "SELECT nombre, fechacelebracion, imagen,descripcion FROM FECHASCIVICAS WHERE fechacelebracion = ?", [req.params.fechaactual], (err, data) =>{
+            if(err) throw err;
+            res.json(data[0] || null);
+
+        }
+    )
+})
+
+
+
+calendario.html----------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #mostrardato{
+            text-align: center;
+        }
+        .fechaStyles {
+            border: 1px solid red;
+            display: inline-block;
+            text-align: center;
+            background-color: aqua;
+            border-radius: 15px;
+        }
+        .fechaStyles h3{
+            font-size: 20px;
+            color: blue;
+        }
+        .fechaStyles p{
+            font-size: 17px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">CALENDARIO DEL DÍA DE HOY</h1>
+    <div id="mostrardato">
+       
+    </div>
+
+    <script src="/fecha.js"></script>
+</body>
+</html>
+
+
+
+fecha.js------------------------------------------------------------------------------------------------------
+const date = new Date;
+var fechaactual = date.getFullYear() + '-' + (date.getMonth() +1) + '-' + date.getDate();
+console.log(fechaactual);
+
+var fechas = fetch('http://localhost:3003/api/dates/'+fechaactual,)
+  .then (res => res.json())
+  .then ((data)=>{
+    if(data != null){
+        document.getElementById('mostrardato').innerHTML = ` <div class="fechaStyles">
+        <h3>hoy es ${fechaactual}</h3>
+        <p>${data.nombre}</p>
+        <img src="${data.imagen}" alt="">
+        <p>${data.descripcion}</p>
+     </div>`
+    }else{
+        document.getElementById('mostrardato').innerHTML = `<div class="fechaStyles">
+        <h3>No hay ninguna celebración</h3>
+     </div>`
+    }
+  })
+
+
+base de datos: 
+CREATE TABLE FECHASCIVICAS
+(
+id int auto_increment,
+nombre text(150) not null,
+descripcion text(100) not null,
+imagen varchar(255) not null ,
+fechaCelebracion date not null ,
+activo bool default('1'),
+CONSTRAINT fechas_civicas_pk PRIMARY KEY (id)
+);
+SELECT nombre, fechacelebracion, imagen,descripcion FROM FECHASCIVICAS WHERE fechacelebracion = '2023-11-17';
+
+INSERT INTO FECHASCIVICAS
+(nombre, fechaCelebracion,imagen ,descripcion)
+VALUES
+('Día del programador',STR_TO_DATE('17/11/2023','%d/%m/%Y'),'https://th.bing.com/th/id/OIP.Vwrj4icKtY2q2hcKMHdX2QHaE5?rs=1&pid=ImgDetMain','descripción del día del programador');
+
